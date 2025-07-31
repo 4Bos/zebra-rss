@@ -1,7 +1,6 @@
 package updater
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
@@ -9,12 +8,11 @@ import (
 	"zebra-rss/entries"
 	"zebra-rss/parser"
 	"zebra-rss/sources"
+	"zebra-rss/storage"
 )
 
 func UpdateSource(
-	db *sql.DB,
-	sourcesRepo sources.Repository,
-	entriesRepo entries.Repository,
+	storage *storage.Storage,
 	source sources.Source,
 ) error {
 	fmt.Printf("The source updating [%d]: %s", source.Id, source.Url)
@@ -38,12 +36,12 @@ func UpdateSource(
 	}
 
 	// Update the source title.
-	if err := sourcesRepo.SetTitle(source.Id, rss.Channel.Title); err != nil {
+	if err := storage.Sources.SetTitle(source.Id, rss.Channel.Title); err != nil {
 		return err
 	}
 
 	for _, item := range rss.Channel.Items {
-		exists, err := entriesRepo.ExistsByHash(item.Hash)
+		exists, err := storage.Entries.ExistsByHash(item.Hash)
 
 		if err != nil {
 			fmt.Println(err)
@@ -57,7 +55,7 @@ func UpdateSource(
 				PublishedAt: (time.Time)(item.PubDate),
 			}
 
-			_, err := entriesRepo.Create(&entry)
+			_, err := storage.Entries.Create(&entry)
 
 			if err != nil {
 				fmt.Println(err)
@@ -66,5 +64,5 @@ func UpdateSource(
 	}
 
 	// Mark source as scanned.
-	return sourcesRepo.MarkSourceAsScanned(source.Id)
+	return storage.Sources.MarkSourceAsScanned(source.Id)
 }

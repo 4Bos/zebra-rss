@@ -56,7 +56,7 @@ func main() {
 		}
 
 		for _, source := range sourcesToUpdate {
-			err := updater.UpdateSource(conn, storage.Sources, storage.Entries, source)
+			err := updater.UpdateSource(storage, source)
 
 			if err != nil {
 				fmt.Println(err)
