@@ -7,6 +7,7 @@ import (
 var migrations = []migration{
 	{version: 00001, controller: createSourcesTable},
 	{version: 00002, controller: createEntriesTable},
+	{version: 00003, controller: createUsersTable},
 }
 
 type migration struct {

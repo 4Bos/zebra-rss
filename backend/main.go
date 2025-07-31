@@ -8,7 +8,10 @@ import (
 	"zebra-rss/entries"
 	"zebra-rss/migrations"
 	"zebra-rss/sources"
+	"zebra-rss/storage"
 	"zebra-rss/updater"
+	"zebra-rss/users"
+	"zebra-rss/web"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -34,20 +37,26 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Initialize repos.
-	sourcesRepo := sources.NewRepository(conn)
-	entriesRepo := entries.NewRepository(conn)
+	// Initialize storage.
+	storage := &storage.Storage{
+		Users:   users.NewRepository(conn),
+		Sources: sources.NewRepository(conn),
+		Entries: entries.NewRepository(conn),
+	}
+
+	// Run webserver.
+	go web.StartServer(storage)
 
 	// Main cycle.
 	for {
-		sourcesToUpdate, err := sourcesRepo.GetSourcesToUpdate()
+		sourcesToUpdate, err := storage.Sources.GetSourcesToUpdate()
 
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		for _, source := range sourcesToUpdate {
-			err := updater.UpdateSource(conn, sourcesRepo, entriesRepo, source)
+			err := updater.UpdateSource(conn, storage.Sources, storage.Entries, source)
 
 			if err != nil {
 				fmt.Println(err)
