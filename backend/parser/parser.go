@@ -33,7 +33,7 @@ func Parse(r io.Reader) (*Rss, error) {
 func ParsePubDate(pubDate string) (*time.Time, error) {
 	formats := []string{
 		"Mon, 02 Jan 2006 15:04:05 MST",
-		// Some feeds may contain dates with timezone offset instead of timezone shortcut.
+		// Some feeds may contain dates with timezone offset instead of timezone abbreviation.
 		// https://www.sublimetext.com/blog/feed
 		"Mon, 02 Jan 2006 15:04:05 -0700",
 	}
