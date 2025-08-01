@@ -32,6 +32,42 @@ func SessionMiddleware(c *gin.Context) {
 	c.Next()
 }
 
+func AuthenticatedMiddleware(c *gin.Context) {
+	session := GinGetSession(c)
+
+	if session == nil {
+		c.AbortWithStatusJSON(401, gin.H{"error": "unauthenticated"})
+
+		return
+	}
+
+	_, exists := session.GetInt64("user_id")
+
+	if !exists {
+		c.AbortWithStatusJSON(401, gin.H{"error": "unauthenticated"})
+
+		return
+	}
+
+	c.Next()
+}
+
+func GinGetUserId(c *gin.Context) int64 {
+	session := GinGetSession(c)
+
+	if session == nil {
+		return 0
+	}
+
+	userId, exists := session.GetInt64("user_id")
+
+	if !exists {
+		return 0
+	}
+
+	return userId
+}
+
 func GinGetSession(c *gin.Context) *sessions.Session {
 	raw, exists := c.Get("session")
 

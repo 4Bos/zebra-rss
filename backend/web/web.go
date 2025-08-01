@@ -11,7 +11,16 @@ func StartServer(storage *storage.Storage) {
 
 	router := gin.Default()
 	router.Use(SessionMiddleware)
-	router.POST("/signin", handler.signIn)
-	router.POST("/logout", handler.signOut)
+	{
+		router.POST("/signin", handler.signIn)
+		router.POST("/logout", handler.signOut)
+
+		safe := router.Group("")
+		safe.Use(AuthenticatedMiddleware)
+		{
+			safe.GET("/me", handler.user)
+		}
+	}
+
 	router.Run("localhost:8080")
 }

@@ -73,3 +73,15 @@ func (h *handler) signOut(c *gin.Context) {
 
 	c.String(200, "")
 }
+
+func (h *handler) user(c *gin.Context) {
+	user, err := h.storage.Users.GetUserById(GinGetUserId(c))
+
+	if err != nil {
+		c.JSON(401, gin.H{"error": "unauthenticated"})
+
+		return
+	}
+
+	c.JSON(200, user)
+}
