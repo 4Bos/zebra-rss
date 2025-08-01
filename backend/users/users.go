@@ -67,6 +67,10 @@ func (r *repository) VerifyCredentials(email string, password string) error {
 }
 
 func (r *repository) GetUserById(id int64) (*User, error) {
+	if id == 0 {
+		return nil, nil
+	}
+
 	var user User
 
 	query := "SELECT id, email, created_at, updated_at FROM zebra.users WHERE id = $1"
