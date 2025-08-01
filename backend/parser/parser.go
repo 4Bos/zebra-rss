@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"io"
+	"strings"
 	"time"
 )
 
@@ -40,6 +41,8 @@ func ParsePubDate(pubDate string) (*time.Time, error) {
 	var result time.Time
 	var err error
 
+	pubDate = replaceTzAbbr(pubDate)
+
 	for _, format := range formats {
 		result, err = time.Parse(format, pubDate)
 
@@ -50,4 +53,19 @@ func ParsePubDate(pubDate string) (*time.Time, error) {
 	}
 
 	return nil, err
+}
+
+// replaceTzAbbr replaces timezone abbreviations with their corresponding UTC offsets.
+// For example, "MSK" would be replaced with "+0300".
+func replaceTzAbbr(date string) string {
+	replacements := map[string]string{
+		" MSK": " +0300",
+		" CET": " +0100",
+	}
+
+	for abbr, offset := range replacements {
+		date = strings.Replace(date, abbr, offset, 1)
+	}
+
+	return date
 }
