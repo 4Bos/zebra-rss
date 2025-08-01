@@ -68,8 +68,13 @@ func TestParsePubDate_Success(t *testing.T) {
 		expected string
 	}{
 		{
-			name:     "With timezone abbreviation",
+			name:     "With MSK timezone abbreviation",
 			pubDate:  "Sat, 30 Oct 2010 23:08:27 MSK",
+			expected: "2010-10-30 20:08:27 +0000 UTC",
+		},
+		{
+			name:     "With CET timezone abbreviation",
+			pubDate:  "Sat, 30 Oct 2010 21:08:27 CET",
 			expected: "2010-10-30 20:08:27 +0000 UTC",
 		},
 		{
