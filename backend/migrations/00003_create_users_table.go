@@ -4,7 +4,7 @@ import "database/sql"
 
 var createUsersTable = controller{
 	Up: func(db *sql.DB) error {
-		query := `CREATE TABLE zebra.users (
+		query := `CREATE TABLE users (
 			id BIGSERIAL NOT NULL,
 			email VARCHAR(255) NOT NULL,
 			password VARCHAR(255) NOT NULL,
@@ -20,7 +20,7 @@ var createUsersTable = controller{
 		return err
 	},
 	Down: func(db *sql.DB) error {
-		_, err := db.Exec("DROP TABLE zebra.users")
+		_, err := db.Exec("DROP TABLE users")
 
 		return err
 	},

@@ -41,7 +41,7 @@ func (r *repository) CreateUser(email string, password string) (*User, error) {
 		return nil, err
 	}
 
-	query := "INSERT INTO zebra.users (email, password) VALUES ($1, $2) RETURNING id"
+	query := "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id"
 	row := r.db.QueryRow(query, email, hashedPassword)
 	err = row.Scan(&userId)
 
@@ -55,7 +55,7 @@ func (r *repository) CreateUser(email string, password string) (*User, error) {
 func (r *repository) VerifyCredentials(email string, password string) error {
 	var hashedPassword string
 
-	query := "SELECT password FROM zebra.users WHERE email = $1"
+	query := "SELECT password FROM users WHERE email = $1"
 	row := r.db.QueryRow(query, email)
 	err := row.Scan(&hashedPassword)
 
@@ -73,7 +73,7 @@ func (r *repository) GetUserById(id int64) (*User, error) {
 
 	var user User
 
-	query := "SELECT id, email, created_at, updated_at FROM zebra.users WHERE id = $1"
+	query := "SELECT id, email, created_at, updated_at FROM users WHERE id = $1"
 	row := r.db.QueryRow(query, id)
 	err := row.Scan(&user.Id, &user.Email, &user.CreatedAt, &user.UpdatedAt)
 
@@ -87,7 +87,7 @@ func (r *repository) GetUserById(id int64) (*User, error) {
 func (r *repository) GetUserByEmail(email string) (*User, error) {
 	var user User
 
-	query := "SELECT id, email, created_at, updated_at FROM zebra.users WHERE email = $1"
+	query := "SELECT id, email, created_at, updated_at FROM users WHERE email = $1"
 	row := r.db.QueryRow(query, email)
 	err := row.Scan(&user.Id, &user.Email, &user.CreatedAt, &user.UpdatedAt)
 

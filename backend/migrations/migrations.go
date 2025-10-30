@@ -51,7 +51,7 @@ func Migrate(db *sql.DB) error {
 }
 
 func createOptionsTable(db *sql.DB) error {
-	query := `CREATE TABLE IF NOT EXISTS zebra.options (
+	query := `CREATE TABLE IF NOT EXISTS options (
 		key VARCHAR(64) NOT NULL,
 		value VARCHAR,
 
@@ -64,7 +64,7 @@ func createOptionsTable(db *sql.DB) error {
 }
 
 func getCurrentVersion(db *sql.DB) (int, error) {
-	query := `SELECT value FROM zebra.options WHERE key = 'version'`
+	query := `SELECT value FROM options WHERE key = 'version'`
 
 	var version int
 
@@ -80,7 +80,7 @@ func getCurrentVersion(db *sql.DB) (int, error) {
 }
 
 func setCurrentVersion(db *sql.DB, version int) error {
-	query := `SELECT value FROM zebra.options WHERE key = 'version'`
+	query := `SELECT value FROM options WHERE key = 'version'`
 
 	var currentVersion int
 
@@ -88,9 +88,9 @@ func setCurrentVersion(db *sql.DB, version int) error {
 
 	switch err {
 	case nil:
-		_, err = db.Exec("UPDATE zebra.options SET value = $1 WHERE key = 'version'", version)
+		_, err = db.Exec("UPDATE options SET value = $1 WHERE key = 'version'", version)
 	case sql.ErrNoRows:
-		_, err = db.Exec("INSERT INTO zebra.options (key, value) VALUES ('version', $1)", version)
+		_, err = db.Exec("INSERT INTO options (key, value) VALUES ('version', $1)", version)
 	}
 
 	return err

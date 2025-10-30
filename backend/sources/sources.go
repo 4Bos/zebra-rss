@@ -32,7 +32,7 @@ func (r *repository) GetSourcesToUpdate() ([]Source, error) {
 	var source Source
 	var result []Source
 
-	rows, err := r.db.Query("SELECT id, title, url, created_at, updated_at, scanned_at FROM zebra.sources WHERE scanned_at IS NULL OR scanned_at < NOW() - interval '1'")
+	rows, err := r.db.Query("SELECT id, title, url, created_at, updated_at, scanned_at FROM sources WHERE scanned_at IS NULL OR scanned_at < NOW() - interval '1'")
 
 	if err != nil {
 		return result, err
@@ -50,13 +50,13 @@ func (r *repository) GetSourcesToUpdate() ([]Source, error) {
 }
 
 func (r *repository) MarkSourceAsScanned(sourceId int64) error {
-	_, err := r.db.Exec("UPDATE zebra.sources SET scanned_at = NOW() WHERE id = $1", sourceId)
+	_, err := r.db.Exec("UPDATE sources SET scanned_at = NOW() WHERE id = $1", sourceId)
 
 	return err
 }
 
 func (r *repository) SetTitle(sourceId int64, title string) error {
-	_, err := r.db.Exec("UPDATE zebra.sources SET title = $1 WHERE id = $2", title, sourceId)
+	_, err := r.db.Exec("UPDATE sources SET title = $1 WHERE id = $2", title, sourceId)
 
 	return err
 }

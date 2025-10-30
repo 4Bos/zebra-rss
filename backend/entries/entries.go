@@ -31,7 +31,7 @@ func NewRepository(db *sql.DB) Repository {
 }
 
 func (r *repository) ExistsByHash(hash string) (bool, error) {
-	rows, err := r.db.Query("SELECT id FROM zebra.entries WHERE hash = $1", hash)
+	rows, err := r.db.Query("SELECT id FROM entries WHERE hash = $1", hash)
 
 	if err != nil {
 		return false, err
@@ -43,7 +43,7 @@ func (r *repository) ExistsByHash(hash string) (bool, error) {
 }
 
 func (r *repository) Create(entry *Entry) (*Entry, error) {
-	query := "INSERT INTO zebra.entries (source_id, hash, title, url, content, published_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
+	query := "INSERT INTO entries (source_id, hash, title, url, content, published_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
 	row := r.db.QueryRow(query, entry.SourceId, entry.Hash, entry.Title, entry.Url, entry.Content, entry.PublishedAt)
 	err := row.Scan(&entry.Id)
 
