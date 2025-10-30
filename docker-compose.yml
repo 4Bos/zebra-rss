@@ -1,0 +1,33 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app
+    networks:
+      - network
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:18.0-alpine3.22
+    environment:
+      - POSTGRES_DB=zebra
+      - POSTGRES_USER=zebra
+      - POSTGRES_PASSWORD=zebra
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - network
+
+volumes:
+  postgres_data:
+
+networks:
+  network:
+    driver: bridge
